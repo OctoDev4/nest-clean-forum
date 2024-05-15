@@ -1,36 +1,38 @@
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { ConfigService } from "@nestjs/config";
-import { Env } from "../env";
-import { z } from "zod";
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Env } from 'src/env';
+import { z } from 'zod';
 
-// Define um esquema Zod para validar o payload do token JWT
+// Definição do esquema de validação para o payload do token JWT
 const tokenPayloadSchema = z.object({
-    sub: z.string().uuid() // Define uma propriedade "sub" como uma string UUID
+    sub: z.string().uuid(), // O campo "sub" é uma string UUID
 });
 
-// Define o tipo TokenPayload como o tipo inferido do esquema Zod
-export type TokenPayload = z.infer<typeof tokenPayloadSchema>;
+// Tipo inferido a partir do esquema de validação
+export type UserPayload = z.infer<typeof tokenPayloadSchema>;
 
-// Define a classe JwtStrategy como uma estratégia de autenticação Passport
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(config: ConfigService<Env, true>) {
-        // Obtém a chave pública JWT do serviço de configuração
+        // Obter a chave pública JWT do ambiente usando o ConfigService
         const publicKey = config.get('JWT_PUBLIC_KEY', { infer: true });
 
-        // Chama o construtor da classe PassportStrategy com as opções da estratégia JWT
+        // Chamar o construtor da superclasse (Strategy) com as opções necessárias
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Extrai o token JWT do cabeçalho de autorização Bearer
-            secretOrKey: Buffer.from(publicKey, 'base64'), // Define a chave pública JWT como segredo para verificação
-            algorithms: ['RS256'] // Define os algoritmos suportados para decodificação do token
+            // Extrair o token JWT do cabeçalho de autorização como um token Bearer
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            // Definir a chave pública como Buffer decodificada a partir da base64
+            secretOrKey: Buffer.from(publicKey, 'base64'),
+            // Definir os algoritmos de assinatura aceitos
+            algorithms: ['RS256'],
         });
     }
 
-    // Método de validação do token JWT
-    async validate(payload: TokenPayload) {
-        // Valida o payload do token usando o esquema Zod
+    // Método de validação do payload do token
+    async validate(payload: UserPayload) {
+        // Validar o payload do token conforme o esquema definido
         return tokenPayloadSchema.parse(payload);
     }
 }
