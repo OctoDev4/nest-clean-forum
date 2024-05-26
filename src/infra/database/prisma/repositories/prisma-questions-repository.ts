@@ -1,30 +1,22 @@
+import { PaginationParams } from '@/core/repositories/pagination-params'
+
+import { Question } from '@/domain/forum/enterprise/entities/question'
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma.service'
+import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { QuestionRepository } from '@/domain/forum/application/repositories/question-repository';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
-import { PrismaQuestionMapper } from '@/infra/database/prisma/mappers/prisma-question-mapper';
-import { Question } from '@/domain/forum/enterprise/entities/question';
-
-
-
 
 @Injectable()
-export class PrismaQuestionsRepository implements QuestionRepository{
+export class PrismaQuestionsRepository implements QuestionRepository {
   constructor(private prisma: PrismaService) {}
-
-  create(question: Question): Promise<void> {
-
-  }
-
-  delete(question: Question): Promise<void> {
-    return Promise.resolve(undefined);
-  }
 
   async findById(id: string): Promise<Question | null> {
     const question = await this.prisma.question.findUnique({
-      where:{
+      where: {
         id,
-      }
+      },
     })
+
     if (!question) {
       return null
     }
@@ -32,16 +24,58 @@ export class PrismaQuestionsRepository implements QuestionRepository{
     return PrismaQuestionMapper.toDomain(question)
   }
 
-  findBySlug(slug: string): Promise<Question | null> {
-    return Promise.resolve(undefined);
+  async findBySlug(slug: string): Promise<Question | null> {
+    const question = await this.prisma.question.findUnique({
+      where: {
+        slug,
+      },
+    })
+
+    if (!question) {
+      return null
+    }
+
+    return PrismaQuestionMapper.toDomain(question)
   }
 
-  findManyRecent(params: PaginationParams): Promise<Question[]> {
-    return Promise.resolve([]);
+  async findManyRecent({ page }: PaginationParams): Promise<Question[]> {
+    const questions = await this.prisma.question.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    return questions.map(PrismaQuestionMapper.toDomain)
   }
 
-  save(question: Question): Promise<void> {
-    return Promise.resolve(undefined);
+  async create(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.create({
+      data,
+    })
   }
 
+  async save(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.update({
+      where: {
+        id: question.id.toString(),
+      },
+      data,
+    })
+  }
+
+  async delete(question: Question): Promise<void> {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.delete({
+      where: {
+        id: data.id,
+      },
+    })
+  }
 }

@@ -7,9 +7,10 @@ import { AggregateRoot } from '@/core/entities/aggregate-root';
 import { QuestionAttachmentList } from '@/domain/forum/enterprise/entities/question-attachment-list';
 import { QuestionBestAnswerChosenEvent } from '@/domain/forum/enterprise/events/question-best-answer-chosen-event';
 
+
 export interface QuestionProps {
   authorId: UniqueEntityId;
-  bestAnswerId?: UniqueEntityId;
+  bestAnswerId?: UniqueEntityId | null;
   attachments: QuestionAttachmentList;
   title: string;
   content: string;
@@ -17,6 +18,8 @@ export interface QuestionProps {
   createdAt: Date;
   updatedAt?: Date | null;
 }
+
+
 
 export class Question extends AggregateRoot<QuestionProps> {
   get authorId() {
@@ -80,13 +83,14 @@ export class Question extends AggregateRoot<QuestionProps> {
     this.touch();
   }
 
-  set bestAnswerId(bestAnswerId: UniqueEntityId | undefined) {
-    if (bestAnswerId === undefined) {
+  set bestAnswerId(bestAnswerId: UniqueEntityId | undefined | null) {
+    if (bestAnswerId === undefined || bestAnswerId === null) {
       return;
     }
 
     if (
       this.props.bestAnswerId === undefined ||
+      this.props.bestAnswerId === null ||
       !bestAnswerId.equals(this.props.bestAnswerId)
     ) {
       this.addDomainEvent(
@@ -115,3 +119,10 @@ export class Question extends AggregateRoot<QuestionProps> {
     return question;
   }
 }
+
+
+
+
+
+
+

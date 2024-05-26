@@ -89,12 +89,13 @@ export class Answer extends AggregateRoot<AnswerProps> {
     this.touch(); // Chama o método touch para atualizar o timestamp de updatedAt
   }
 
+
   /**
-   * Cria uma nova instância de Answer.
-   * Se não fornecido, o timestamp de createdAt é definido para o momento atual.
-   * @param props Propriedades da resposta.
-   * @param id Identificador único da resposta (opcional).
-   * @returns Uma nova instância de Answer.
+   * Creates a new Answer object.
+   *
+   * @param {Optional<AnswerProps, 'createdAt' | 'attachments'>} props - Optional properties to set on the Answer object.
+   * @param {UniqueEntityId} id - Optional UniqueEntityId to set on the Answer object.
+   * @return {Answer} - The newly created Answer object.
    */
   static create(
     props: Optional<AnswerProps, 'createdAt' | 'attachments'>,
