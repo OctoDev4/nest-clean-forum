@@ -16,14 +16,19 @@ const bodyValidationPipe = new ZodValidationPipe(createQuestionBodySchema)
 type CreateQuestionBodySchema = z.infer<typeof createQuestionBodySchema>
 
 @Controller('/questions')
+
 @UseGuards(JwtAuthGuard)
 export class CreateQuestionController {
+
+
   constructor(private createQuestion: CreateQuestionUseCase) {}
 
   @Post()
   async handle(
     @Body(bodyValidationPipe) body: CreateQuestionBodySchema,
+
     @CurrentUser() user: UserPayload,
+
   ) {
     const { title, content } = body
     const userId = user.sub
