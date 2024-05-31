@@ -31,7 +31,7 @@ export class CreateQuestionController {
 
   ) {
     const { title, content } = body
-    const userId = user.sub
+    const userId = user.sub;
 
     await this.createQuestion.execute({
       title,
