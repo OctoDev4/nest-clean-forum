@@ -15,9 +15,6 @@ import { QuestionRepository } from '@/domain/forum/application/repositories/ques
       useClass: PrismaQuestionsRepository,
     },
   ],
-  exports:[
-    PrismaService,
-    QuestionRepository,
-  ]
+  exports: [PrismaService, QuestionRepository],
 })
 export class DatabaseModule {}

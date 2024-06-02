@@ -9,7 +9,7 @@ export class FakeHasher implements HashGenerator, HashComparer {
   }
 
   async compare(plain: string, hash: string): Promise<boolean> {
-    return plain.concat('-hashed') === hash
+    return plain.concat('-hashed') === hash;
   }
 }
 
