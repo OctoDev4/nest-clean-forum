@@ -35,7 +35,7 @@ describe('Authenticate (E2E)', () => {
       password: '123456789',
     });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(201);
     expect(response.body).toEqual({
       access_token: expect.any(String),
     });

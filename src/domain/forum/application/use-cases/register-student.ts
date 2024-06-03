@@ -13,7 +13,7 @@ interface RegisterStudentUseCaseRequest{
 
 
 type RegisterStudentUseCaseResponse = Either<StudentAlreadyExistsError, {
-  student:Student
+    student: Student;
 }>
 
 

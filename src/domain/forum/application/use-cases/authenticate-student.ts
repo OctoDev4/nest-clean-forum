@@ -1,23 +1,22 @@
-import { Either, left, right } from '@/core/either';
-import { Injectable } from '@nestjs/common';
-import { StudentRepository } from '@/domain/forum/application/repositories/student-repository';
+import { Either, left, right } from '@/core/either'
+import { Injectable } from '@nestjs/common'
+
+import { Encrypter } from '../cryptography/encrypter'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { HashComparer } from '@/domain/forum/application/cryptography/hash.comparer';
-import { Encrypter } from '@/domain/forum/application/cryptography/encrypter';
-import { WrongCredentialsError } from '@/domain/forum/application/use-cases/errors/wrong-credentials-error';
+import { StudentRepository } from '@/domain/forum/application/repositories/student-repository';
 
-interface AuthenticateStudentUseCaseRequest{
-  email: string;
-  password: string;
+interface AuthenticateStudentUseCaseRequest {
+  email: string
+  password: string
 }
-
 
 type AuthenticateStudentUseCaseResponse = Either<
   WrongCredentialsError,
   {
-    accessToken: string;
+    accessToken: string
   }
->;
-
+>
 
 @Injectable()
 export class AuthenticateStudentUseCase {
@@ -27,35 +26,31 @@ export class AuthenticateStudentUseCase {
     private encrypter: Encrypter,
   ) {}
 
-
-  async execute({email,password}:AuthenticateStudentUseCaseRequest):Promise<AuthenticateStudentUseCaseResponse>{
-
-
-
+  async execute({
+                  email,
+                  password,
+                }: AuthenticateStudentUseCaseRequest): Promise<AuthenticateStudentUseCaseResponse> {
     const student = await this.studentRepository.findByEmail(email)
 
-    if(!student){
+    if (!student) {
       return left(new WrongCredentialsError())
     }
 
     const isPasswordValid = await this.hashComparer.compare(
       password,
       student.password,
-    );
+    )
 
-    if(!isPasswordValid){
+    if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
 
     const accessToken = await this.encrypter.encrypt({
       sub: student.id.toString(),
-    });
+    })
 
     return right({
       accessToken,
     })
   }
-
-
-
 }

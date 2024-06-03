@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Env } from '@/infra/env';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -27,6 +29,12 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
 
-  providers: [JwtStrategy], // Define o JwtStrategy como provedor deste módulo
+  providers: [
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // Define o JwtAuthGuard como guarda de aplicação
+    },
+  ], // Define o JwtStrategy como provedor deste módulo
 })
 export class AuthModule {} // Exporta a classe AuthModule

@@ -6,18 +6,25 @@ import { FetchRecentQuestionsController } from '@/infra/http/controllers/fetch-r
 import { DatabaseModule } from '@/infra/database/database.module';
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question';
 import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions';
+import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student';
+import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student';
+import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 
 @Module({
-  imports:[DatabaseModule],
+  imports:[DatabaseModule,CryptographyModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
     CreateQuestionController,
     FetchRecentQuestionsController,
   ],
-  providers:[
+  providers: [
     CreateQuestionUseCase,
-    FetchRecentQuestionsUseCase
+    FetchRecentQuestionsUseCase,
+    RegisterStudentUseCase,
+    AuthenticateStudentUseCase,
   ]
 })
 export class HttpModule {}

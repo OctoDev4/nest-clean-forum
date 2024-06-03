@@ -8,9 +8,9 @@ import { HashComparer } from '@/domain/forum/application/cryptography/hash.compa
 @Module({
 
   providers:[
-    {provide:Encrypter , useClass:JwtEncrypter },
-    {provide:HashGenerator,useClass:BcryptHasher},
-    {provide:HashComparer , useClass:BcryptHasher}
+    { provide: Encrypter, useClass: JwtEncrypter },
+    { provide: HashGenerator, useClass: BcryptHasher },
+    { provide: HashComparer, useClass: BcryptHasher },
   ],
   exports:[
     Encrypter,

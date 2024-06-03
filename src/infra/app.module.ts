@@ -11,7 +11,7 @@ import { HttpModule } from '@/infra/http/http.module';
       isGlobal: true,
     }),
     AuthModule,
-    HttpModule
+    HttpModule,
   ],
 })
 export class AppModule {}
