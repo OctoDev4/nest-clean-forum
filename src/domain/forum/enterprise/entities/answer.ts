@@ -14,7 +14,7 @@ export interface AnswerProps {
   attachments: AnswerAttachmentList;
   content: string; // Conteúdo da resposta
   createdAt: Date; // Data de criação da resposta
-  updatedAt?: Date; // Data de atualização da resposta (opcional)
+  updatedAt?: Date | null // Data de atualização da resposta (opcional)
 }
 
 /**

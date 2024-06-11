@@ -1,30 +1,44 @@
-// Importando as dependências necessárias
+import { faker } from '@faker-js/faker'
+
 import {
   Question,
   QuestionProps,
-} from '@/domain/forum/enterprise/entities/question';
+} from '@/domain/forum/enterprise/entities/question'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { PrismaQuestionMapper } from '@/infra/database/prisma/mappers/prisma-question-mapper'
+import { Injectable } from '@nestjs/common'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
-import { faker } from '@faker-js/faker'; // Adicionando a importação do faker
 
-// Definindo a função MakeQuestion que recebe um objeto Partial<QuestionProps> como argumento opcional
-// e um argumento opcional id do tipo UniqueEntityId
-export function MakeQuestion(
-  override: Partial<QuestionProps> = {}, // Definindo override como um objeto parcial de QuestionProps
-  id?: UniqueEntityId, // Permitindo que id seja opcional e seja do tipo UniqueEntityId
+export function makeQuestion(
+  override: Partial<QuestionProps> = {},
+  id?: UniqueEntityId,
 ) {
-  // Criando uma instância de Question utilizando a função estática create do tipo Question
-  // passando um objeto com propriedades authorId, title, content, e quaisquer propriedades adicionais especificadas em override
-  // e opcionalmente passando um id
   const question = Question.create(
     {
-      authorId: new UniqueEntityId(), // Criando uma nova instância de UniqueEntityId como authorId
-      title: faker.lorem.sentence(), // Utilizando faker para gerar um título aleatório
-      content: faker.lorem.text(), // Utilizando faker para gerar conteúdo de pergunta aleatório
-
-      ...override, // Sobrescrevendo as propriedades padrão com qualquer propriedade fornecida em override
+      authorId: new UniqueEntityId(),
+      title: faker.lorem.sentence(),
+      content: faker.lorem.text(),
+      ...override,
     },
     id,
-  ); // Passando o id opcional para a criação da instância de Question
+  )
 
-  return question; // Retornando a instância de Question criada
+  return question;
+}
+
+@Injectable()
+export class QuestionFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaQuestion(
+    data: Partial<QuestionProps> = {},
+  ): Promise<Question> {
+    const question = makeQuestion(data)
+
+    await this.prisma.question.create({
+      data: PrismaQuestionMapper.toPrisma(question),
+    })
+
+    return question
+  }
 }

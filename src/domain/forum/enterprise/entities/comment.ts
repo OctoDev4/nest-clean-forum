@@ -1,5 +1,4 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
-import { Entity } from '@/core/entities/entity';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 
 export interface CommentProps {

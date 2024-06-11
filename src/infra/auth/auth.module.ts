@@ -1,40 +1,39 @@
-import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { Env } from '@/infra/env';
-import { JwtStrategy } from './jwt.strategy';
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { Module } from '@nestjs/common'
+import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
+import { JwtStrategy } from './jwt.strategy'
+import { APP_GUARD } from '@nestjs/core'
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { EnvService } from '@/infra/env/env.service';
+import { EnvModule } from '@/infra/env/env.module';
+
 
 @Module({
   imports: [
-    PassportModule, // Importa o módulo de autenticação Passport
+    PassportModule,
     JwtModule.registerAsync({
-      // Importa o módulo JWT de forma assíncrona
-      global: true, // Define este módulo como global
-      inject: [ConfigService], // Injeta o serviço de configuração do NestJS
-
-      useFactory(config: ConfigService<Env, true>) {
-        // Define uma fábrica para criar as opções do módulo JWT
-        const privateKey = config.get('JWT_PRIVATE_KEY', { infer: true }); // Obtém a chave privada JWT do serviço de configuração
-        const publicKey = config.get('JWT_PUBLIC_KEY', { infer: true }); // Obtém a chave pública JWT do serviço de configuração
+      imports: [EnvModule],
+      inject: [EnvService],
+      global: true,
+      useFactory(env: EnvService) {
+        const privateKey = env.get('JWT_PRIVATE_KEY')
+        const publicKey = env.get('JWT_PUBLIC_KEY')
 
         return {
-          signOptions: { algorithm: 'RS256' }, // Define as opções de assinatura JWT com algoritmo RS256
-          privateKey: Buffer.from(privateKey, 'base64'), // Converte a chave privada de base64 para Buffer
-          publicKey: Buffer.from(publicKey, 'base64'), // Converte a chave pública de base64 para Buffer
-        };
+          signOptions: { algorithm: 'RS256' },
+          privateKey: Buffer.from(privateKey, 'base64'),
+          publicKey: Buffer.from(publicKey, 'base64'),
+        }
       },
     }),
   ],
-
   providers: [
     JwtStrategy,
+    EnvService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Define o JwtAuthGuard como guarda de aplicação
+      useClass: JwtAuthGuard,
     },
-  ], // Define o JwtStrategy como provedor deste módulo
+  ],
 })
-export class AuthModule {} // Exporta a classe AuthModule
+export class AuthModule {}
