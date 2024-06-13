@@ -9,8 +9,6 @@ import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-case
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student';
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard';
 import { GetQuestionBySlugController } from '@/infra/http/controllers/get-question-by-slug.controller';
 import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug';
 
