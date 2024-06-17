@@ -10,24 +10,35 @@ import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/reg
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { GetQuestionBySlugController } from '@/infra/http/controllers/get-question-by-slug.controller';
+import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question';
+import { DeleteQuestionUseCase } from '@/domain/forum/application/use-cases/delete-question';
+import { DeleteQuestionController } from '@/infra/http/controllers/delete-question.controller';
 import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug';
+import { EditQuestionController } from '@/infra/http/controllers/edit-question.controller';
+import { AnswerQuestionController } from '@/infra/http/controllers/answer-question.controller';
+import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question';
 
 @Module({
-  imports:[DatabaseModule,CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
     CreateQuestionController,
     FetchRecentQuestionsController,
-    GetQuestionBySlugController
+    GetQuestionBySlugController,
+    EditQuestionController,
+    DeleteQuestionController,
+    AnswerQuestionController
   ],
   providers: [
     CreateQuestionUseCase,
     FetchRecentQuestionsUseCase,
     RegisterStudentUseCase,
     AuthenticateStudentUseCase,
-    GetQuestionBySlugUseCase
-
+    GetQuestionBySlugUseCase,
+    EditQuestionUseCase,
+    DeleteQuestionUseCase,
+    AnswerQuestionUseCase
   ]
 })
 export class HttpModule {}

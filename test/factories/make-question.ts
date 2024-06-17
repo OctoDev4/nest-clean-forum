@@ -9,7 +9,7 @@ import { PrismaQuestionMapper } from '@/infra/database/prisma/mappers/prisma-que
 import { Injectable } from '@nestjs/common'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 
-export function makeQuestion(
+export function MakeQuestion(
   override: Partial<QuestionProps> = {},
   id?: UniqueEntityId,
 ) {
@@ -33,7 +33,7 @@ export class QuestionFactory {
   async makePrismaQuestion(
     data: Partial<QuestionProps> = {},
   ): Promise<Question> {
-    const question = makeQuestion(data)
+    const question = MakeQuestion(data)
 
     await this.prisma.question.create({
       data: PrismaQuestionMapper.toPrisma(question),

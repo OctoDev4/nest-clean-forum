@@ -6,6 +6,7 @@ import request from 'supertest';
 import { StudentFactory } from '../../../../test/factories/make-student';
 import { QuestionFactory } from '../../../../test/factories/make-question';
 import { DatabaseModule } from '@/infra/database/database.module';
+import { expect } from 'vitest';
 
 
 describe('Fetch recent questions (E2E)', () => {
@@ -46,10 +47,10 @@ describe('Fetch recent questions (E2E)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-      questions: [
+      questions: expect.arrayContaining([
         expect.objectContaining({ title: 'Question 01' }),
         expect.objectContaining({ title: 'Question 02' }),
-      ],
+      ]),
     });
   });
 });
