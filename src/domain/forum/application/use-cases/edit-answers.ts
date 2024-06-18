@@ -6,6 +6,7 @@ import { AnswerAttachmentsRepository } from '@/domain/forum/application/reposito
 import { AnswerAttachmentList } from '@/domain/forum/enterprise/entities/answer-attachment-list';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-attachment';
+import { Injectable } from '@nestjs/common';
 
 interface EditAnswerUseCaseRequest {
   authorId: string;
@@ -18,7 +19,7 @@ type EditAnswerUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {}
 >;
-
+@Injectable()
 export class EditAnswerUseCase {
   constructor(
     private answerRepository: AnswerRepository,
