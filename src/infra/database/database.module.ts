@@ -13,9 +13,7 @@ import { PrismaStudentsRepository } from '@/infra/database/prisma/repositories/p
 import { QuestionCommentRepository } from '@/domain/forum/application/repositories/question-comment-repository';
 import { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
 import { AnswerRepository } from '@/domain/forum/application/repositories/answer-repository';
-import {
-  PrismaAnswerAttachmentsRepository
-} from '@/infra/database/prisma/repositories/prisma-answer-attachments-repository';
+import { PrismaAnswerAttachmentsRepository } from '@/infra/database/prisma/repositories/prisma-answer-attachments-repository';
 
 @Module({
   providers: [

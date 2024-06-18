@@ -2,6 +2,7 @@ import { AnswerRepository } from '@/domain/forum/application/repositories/answer
 import { Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '@/domain/forum/application/use-cases/errors/resource-not-found-error';
 import { NotAllowedError } from '@/domain/forum/application/use-cases/errors/not-allowed-error';
+import { Injectable } from '@nestjs/common';
 
 interface DeleteAnswerUseCaseRequest {
   authorId: string;
@@ -12,7 +13,7 @@ type DeleteAnswerUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {}
 >;
-
+@Injectable()
 export class DeleteAnswerUseCase {
   constructor(private answersRepository: AnswerRepository) {}
 
