@@ -1,13 +1,7 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Param,
-  Query,
-} from '@nestjs/common'
-import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { z } from 'zod'
-import { FetchQuestionAnswersUseCase } from '@/domain/forum/application/use-cases/fetch-question-answers'
+import { BadRequestException, Controller, Get, Param, Query } from '@nestjs/common';
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe';
+import { z } from 'zod';
+import { FetchQuestionAnswersUseCase } from '@/domain/forum/application/use-cases/fetch-question-answers';
 import { AnswerPresenter } from '@/infra/http/presenters/answer-presenter';
 
 
