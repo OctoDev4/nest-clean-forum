@@ -16,15 +16,16 @@ import { EnvModule } from '@/infra/env/env.module';
       inject: [EnvService],
       global: true,
       useFactory(env: EnvService) {
-        const privateKey = env.get('JWT_PRIVATE_KEY')
-        const publicKey = env.get('JWT_PUBLIC_KEY')
+        const privateKey = env.get('JWT_PRIVATE_KEY')  // Obtém a chave privada do ambiente
+        const publicKey = env.get('JWT_PUBLIC_KEY')  // Obtém a chave pública do ambiente
 
         return {
-          signOptions: { algorithm: 'RS256' },
-          privateKey: Buffer.from(privateKey, 'base64'),
-          publicKey: Buffer.from(publicKey, 'base64'),
+          signOptions: { algorithm: 'RS256' },  // Define o algoritmo de assinatura como RS256
+          privateKey: Buffer.from(privateKey, 'base64'),  // Converte a chave privada de base64 para Buffer
+          publicKey: Buffer.from(publicKey, 'base64'),  // Converte a chave pública de base64 para Buffer
         }
       },
+
     }),
   ],
   providers: [

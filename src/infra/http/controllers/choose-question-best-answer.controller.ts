@@ -17,7 +17,7 @@ export class ChooseQuestionBestAnswerController {
   ) {}
 
   @Patch()
-  @HttpCode(200)
+  @HttpCode(204)
   async handle(
     @CurrentUser() user: UserPayload,
     @Param('answerId') answerId: string,
