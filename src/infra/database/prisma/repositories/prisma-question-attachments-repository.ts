@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PrismaQuestionAttachmentMapper } from '../mappers/prisma-question-attachment-mapper'
 import { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
+import {undefined} from "zod";
 
 @Injectable()
 export class PrismaQuestionAttachmentsRepository
@@ -29,5 +30,15 @@ export class PrismaQuestionAttachmentsRepository
         questionId,
       },
     })
+  }
+
+
+
+  createMany(attachments: QuestionAttachment[]): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
+  deleteMany(attachments: QuestionAttachment[]): Promise<void> {
+    return Promise.resolve(undefined);
   }
 }
