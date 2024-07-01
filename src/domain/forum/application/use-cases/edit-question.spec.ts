@@ -5,8 +5,8 @@ import {
 } from "../../../../../test/repositories/in-memory-question-attachments-repository";
 import {UniqueEntityId} from "@/core/entities/unique-entity-id";
 import {MakeQuestion} from "../../../../../test/factories/make-question";
-import {makeQuestionAttachment} from "../../../../../test/factories/make-question-attachment";
 import {NotAllowedError} from "@/domain/forum/application/use-cases/errors/not-allowed-error";
+import {makeQuestionAttachment} from "../../../../../test/factories/make-question-attachment";
 
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository

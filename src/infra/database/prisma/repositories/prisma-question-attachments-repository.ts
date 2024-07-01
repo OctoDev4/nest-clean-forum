@@ -1,44 +1,60 @@
-
-import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-attachment'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
-import { PrismaQuestionAttachmentMapper } from '../mappers/prisma-question-attachment-mapper'
-import { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
-import {undefined} from "zod";
+import { QuestionAttachmentRepository } from "@/domain/forum/application/repositories/question-attachments-repository"
+import { QuestionAttachment } from '@/domain/forum/enterprise/entities/question-attachment'
+import {PrismaQuestionAttachmentMapper} from "@/infra/database/prisma/mappers/prisma-question-attachment-mapper";
 
 @Injectable()
 export class PrismaQuestionAttachmentsRepository
-  implements QuestionAttachmentRepository
+    implements QuestionAttachmentRepository
 {
-  constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) {}
 
-  async findManyByQuestionId(
-    questionId: string,
-  ): Promise<QuestionAttachment[]> {
-    const questionAttachments = await this.prisma.attachment.findMany({
-      where: {
-        questionId,
-      },
-    })
+    async findManyByQuestionId(
+        questionId: string,
+    ): Promise<QuestionAttachment[]> {
+        const questionAttachments = await this.prisma.attachment.findMany({
+            where: {
+                questionId,
+            },
+        })
 
-    return questionAttachments.map(PrismaQuestionAttachmentMapper.toDomain)
-  }
+        return questionAttachments.map(PrismaQuestionAttachmentMapper.toDomain)
+    }
 
-  async deleteManyByQuestionId(questionId: string): Promise<void> {
-    await this.prisma.attachment.deleteMany({
-      where: {
-        questionId,
-      },
-    })
-  }
+    async createMany(attachments: QuestionAttachment[]): Promise<void> {
+        if (attachments.length === 0) {
+            return
+        }
 
+        const data = PrismaQuestionAttachmentMapper.toPrismaUpdateMany(attachments)
 
+        await this.prisma.attachment.updateMany(data)
+    }
 
-  createMany(attachments: QuestionAttachment[]): Promise<void> {
-    return Promise.resolve(undefined);
-  }
+    async deleteMany(attachments: QuestionAttachment[]): Promise<void> {
+        if (attachments.length === 0) {
+            return
+        }
 
-  deleteMany(attachments: QuestionAttachment[]): Promise<void> {
-    return Promise.resolve(undefined);
-  }
+        const attachmentIds = attachments.map((attachment) => {
+            return attachment.attachmentId.toString()
+        })
+
+        await this.prisma.attachment.deleteMany({
+            where: {
+                id: {
+                    in: attachmentIds,
+                },
+            },
+        })
+    }
+
+    async deleteManyByQuestionId(questionId: string): Promise<void> {
+        await this.prisma.attachment.deleteMany({
+            where: {
+                questionId,
+            },
+        })
+    }
 }
