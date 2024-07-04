@@ -6,6 +6,8 @@ import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-ans
 import { makeAnswer } from '../../../../../test/factories/make-answers';
 import { UniqueEntityId } from '@/core/entities/unique-entity-id';
 import { makeAnswerAttachment } from '../../../../../test/factories/make-answer-attachment';
+import { InMemoryAttachmentsRepository } from '../../../../../test/repositories/in-memory-attachments-repository';
+import { expect } from 'vitest';
 
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
@@ -87,5 +89,54 @@ describe('Edit Answer', () => {
 
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(NotAllowedError);
+  });
+
+
+  it('should sync new and removed attachments when editing a question',async () => {
+
+
+    const newAnswer = makeAnswer({
+      authorId: new UniqueEntityId('author-1'),
+    },
+      new UniqueEntityId('answer-1')
+    )
+
+    await inMemoryAnswersRepository.create(newAnswer)
+
+
+    inMemoryAnswerAttachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityId('1'),
+      }),
+      makeAnswerAttachment({
+        answerId: newAnswer.id,
+        attachmentId: new UniqueEntityId('2'),
+      }),
+    )
+
+    const result = await sut.execute({
+      answerId: newAnswer.id.toString(),
+      authorId: 'author-1',
+      content: 'Conteúdo teste',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityId('1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityId('3'),
+        }),
+      ]),
+    )
+
+
+
+
   });
 });

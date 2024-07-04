@@ -4,10 +4,15 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service';
 import { Answer } from '@/domain/forum/enterprise/entities/answer';
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { PrismaAnswerMapper } from '@/infra/database/prisma/mappers/prisma-answer-mapper';
+import { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository';
+import { promise } from 'zod';
 
 @Injectable()
 export class PrismaAnswersRepository implements AnswerRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private answerAttachmentRepository: AnswerAttachmentsRepository,
+  ) {}
 
   async create(answer: Answer): Promise<void> {
     const data = PrismaAnswerMapper.toPrisma(answer);
@@ -15,6 +20,10 @@ export class PrismaAnswersRepository implements AnswerRepository {
     await this.prisma.answer.create({
       data,
     });
+
+    await this.answerAttachmentRepository.createMany(
+      answer.attachments.getItems()
+    )
   }
 
   async delete(answer: Answer): Promise<void> {
@@ -61,12 +70,21 @@ export class PrismaAnswersRepository implements AnswerRepository {
 
     const data = PrismaAnswerMapper.toPrisma(answer)
 
-    await this.prisma.answer.update({
-      where: {
-        id: answer.id.toString(),
-      },
-      data,
-    })
+   await Promise.all([
+      await this.prisma.answer.update({
+        where: {
+          id: data.id,
+        },
+        data,
+      }),
+      this.answerAttachmentRepository.createMany(
+        answer.attachments.getNewItems()
+      ),
+      this.answerAttachmentRepository.deleteMany(
+        answer.attachments.getRemovedItems(),
+      ),
+    ])
+
 
   }
 }

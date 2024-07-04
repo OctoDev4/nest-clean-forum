@@ -3,6 +3,7 @@ import { AnswerAttachment } from '@/domain/forum/enterprise/entities/answer-atta
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaAnswerAttachmentMapper } from '../mappers/prisma-answer-attachment-mapper'
+import { undefined } from 'zod';
 
 @Injectable()
 export class PrismaAnswerAttachmentsRepository
@@ -26,5 +27,35 @@ export class PrismaAnswerAttachmentsRepository
         answerId,
       },
     })
+  }
+
+  async createMany(attachments: AnswerAttachment[]): Promise<void> {
+    if (attachments.length === 0){
+      return;
+    }
+
+    const data = PrismaAnswerAttachmentMapper.toPrismaUpdateMany(attachments)
+
+   await this.prisma.attachment.updateMany(data)
+
+  }
+
+  async deleteMany(attachments: AnswerAttachment[]): Promise<void> {
+
+    if(attachments.length === 0){
+      return;
+    }
+    const attachmentIds = attachments.map((attachment) => {
+      return attachment.id.toString()
+    })
+
+    await this.prisma.attachment.deleteMany({
+      where: {
+        id: {
+          in: attachmentIds,
+        }
+      }
+    })
+
   }
 }
