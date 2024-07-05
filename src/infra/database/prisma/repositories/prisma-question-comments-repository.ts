@@ -64,7 +64,7 @@ export class PrismaQuestionCommentsRepository implements QuestionCommentReposito
     return questionComments.map(PrismaQuestionCommentMapper.toDomain)
   }
 
-  findManyByQuestionIdWithAuthor(
+  async findManyByQuestionIdWithAuthor(
     questionId: string,
     { page }: PaginationParams,
   ): Promise<CommentWithAuthor[]> {
