@@ -70,7 +70,7 @@ export class PrismaQuestionCommentsRepository implements QuestionCommentReposito
   ): Promise<CommentWithAuthor[]> {
 
     const questionComments = await this.prisma.comment.findMany({
-      where:{
+      where: {
         questionId,
       },
       orderBy: {
