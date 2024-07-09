@@ -85,5 +85,6 @@ export class InMemoryQuestionCommentsRepository implements QuestionCommentReposi
       });
 
     return questionComments;
+
   }
 }

@@ -5,8 +5,8 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { QuestionRepository } from '@/domain/forum/application/repositories/question-repository';
-import {QuestionAttachmentRepository} from "@/domain/forum/application/repositories/question-attachments-repository";
-import {promise} from "zod";
+import { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
+
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionRepository {

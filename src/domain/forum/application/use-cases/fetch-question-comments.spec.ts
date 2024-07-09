@@ -28,7 +28,7 @@ describe('Fetch Question Comments', () => {
     const comment1 = makeQuestionComment({
       questionId: new UniqueEntityId('question-1'),
       authorId: student.id,
-    })
+    });
 
     const comment2 = makeQuestionComment({
       questionId: new UniqueEntityId('question-1'),
@@ -48,6 +48,7 @@ describe('Fetch Question Comments', () => {
       questionId: 'question-1',
       page: 1,
     })
+
 
     expect(result.value?.comments).toHaveLength(3)
     expect(result.value?.comments).toEqual(
