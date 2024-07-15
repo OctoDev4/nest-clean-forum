@@ -11,6 +11,8 @@ export class DomainEvents {
   // Uma lista para manter rastreio de agregados marcados para despacho de eventos
   private static markedAggregates: AggregateRoot<any>[] = [];
 
+  public static shouldRun = true
+
   // Método para marcar um agregado para despacho de eventos
   public static markAggregateForDispatch(aggregate: AggregateRoot<any>) {
     // Verifica se o agregado já foi marcado
@@ -94,6 +96,11 @@ export class DomainEvents {
 
     // Verifica se há handlers registrados para o tipo de evento
     const isEventRegistered = eventClassName in this.handlersMap;
+
+
+    if (!this.shouldRun){
+      return null
+    }
 
     // Se houver handlers registrados, executa cada um deles para o evento
     if (isEventRegistered) {

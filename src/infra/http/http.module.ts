@@ -40,6 +40,8 @@ import { FetchAnswerCommentsController } from '@/infra/http/controllers/fetch-an
 import { UploadAttachmentController } from '@/infra/http/controllers/upload-attachment.controller';
 import { StorageModule } from '@/infra/storage/storage.module';
 import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachment';
+import { ReadNotificationUseCase } from '@/domain/notification/application/use-cases/read-notification';
+import { ReadNotificationController } from '@/infra/http/controllers/read-notification.controller';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -62,7 +64,8 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     DeleteAnswerCommentController,
     FetchQuestionCommentsController,
     FetchAnswerCommentsController,
-    UploadAttachmentController
+    UploadAttachmentController,
+    ReadNotificationController
 
   ],
   providers: [
@@ -84,7 +87,8 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     DeleteAnswerCommentUseCase,
     FetchQuestionCommentsUseCase,
     FetchAnswerCommentsUseCase,
-    UploadAndCreateAttachmentUseCase
+    UploadAndCreateAttachmentUseCase,
+    ReadNotificationUseCase
 
   ]
 })

@@ -9,6 +9,7 @@ import { QuestionAttachmentRepository } from '@/domain/forum/application/reposit
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
 import { undefined } from 'zod';
 import { PrismaQuestionDetailsMapper } from '@/infra/database/prisma/mappers/prisma-question-details-mapper';
+import { DomainEvents } from '@/core/events/domain-events';
 
 
 @Injectable()
@@ -67,6 +68,9 @@ export class PrismaQuestionsRepository implements QuestionRepository {
     await this.questionAttachmentRepository.createMany(
         question.attachments.getItems()
     )
+
+    DomainEvents.dispatchEventsForAggregate(question.id)
+
   }
 
   async save(question: Question): Promise<void> {
@@ -88,6 +92,9 @@ export class PrismaQuestionsRepository implements QuestionRepository {
             question.attachments.getRemovedItems()
         )
     ])
+
+
+    DomainEvents.dispatchEventsForAggregate(question.id)
 
 
 

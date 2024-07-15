@@ -4,7 +4,10 @@ import { SendNotificationUseCase } from '@/domain/notification/application/use-c
 import { DomainEvents } from '@/core/events/domain-events';
 import { AnswerRepository } from '@/domain/forum/application/repositories/answer-repository';
 import { AnswerCommentCreatedEvent } from '@/domain/forum/enterprise/events/answer-comment-created-event';
+import { Injectable } from '@nestjs/common';
 
+
+@Injectable()
 export class OnAnswerCommentCreated implements EventHandler {
   constructor(
     private answerRepository: AnswerRepository,

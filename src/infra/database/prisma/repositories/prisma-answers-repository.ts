@@ -5,7 +5,7 @@ import { Answer } from '@/domain/forum/enterprise/entities/answer';
 import { PaginationParams } from '@/core/repositories/pagination-params';
 import { PrismaAnswerMapper } from '@/infra/database/prisma/mappers/prisma-answer-mapper';
 import { AnswerAttachmentsRepository } from '@/domain/forum/application/repositories/answer-attachments-repository';
-import { promise } from 'zod';
+import { DomainEvents } from '@/core/events/domain-events';
 
 @Injectable()
 export class PrismaAnswersRepository implements AnswerRepository {
@@ -24,6 +24,8 @@ export class PrismaAnswersRepository implements AnswerRepository {
     await this.answerAttachmentRepository.createMany(
       answer.attachments.getItems()
     )
+
+    DomainEvents.dispatchEventsForAggregate(answer.id)
   }
 
   async delete(answer: Answer): Promise<void> {
@@ -84,6 +86,9 @@ export class PrismaAnswersRepository implements AnswerRepository {
         answer.attachments.getRemovedItems(),
       ),
     ])
+
+
+   DomainEvents.dispatchEventsForAggregate(answer.id)
 
 
   }
