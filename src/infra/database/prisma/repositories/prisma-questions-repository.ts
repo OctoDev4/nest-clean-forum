@@ -7,15 +7,16 @@ import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { QuestionRepository } from '@/domain/forum/application/repositories/question-repository';
 import { QuestionAttachmentRepository } from '@/domain/forum/application/repositories/question-attachments-repository';
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
-import { undefined } from 'zod';
 import { PrismaQuestionDetailsMapper } from '@/infra/database/prisma/mappers/prisma-question-details-mapper';
 import { DomainEvents } from '@/core/events/domain-events';
+import { CacheRepository } from '@/infra/cache/cache-repository';
 
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionRepository {
   constructor(
       private prisma: PrismaService,
+      private cacheRepository: CacheRepository,
       private questionAttachmentRepository: QuestionAttachmentRepository
   ) {}
 
@@ -34,6 +35,15 @@ export class PrismaQuestionsRepository implements QuestionRepository {
   }
 
   async findBySlug(slug: string): Promise<Question | null> {
+
+    const cacheHit = await this.cacheRepository.get(`question:${slug}:details`)
+
+    if (cacheHit){
+      const cacheData = JSON.parse(cacheHit)
+
+      return cacheData
+    }
+
     const question = await this.prisma.question.findUnique({
       where: {
         slug,
@@ -44,7 +54,14 @@ export class PrismaQuestionsRepository implements QuestionRepository {
       return null
     }
 
-    return PrismaQuestionMapper.toDomain(question)
+    const questionDetails = PrismaQuestionMapper.toDomain(question)
+
+    await this.cacheRepository.set(
+      `question:${slug}:details`,
+      JSON.stringify(questionDetails),
+    );
+
+    return questionDetails;
   }
 
   async findManyRecent({ page }: PaginationParams): Promise<Question[]> {
@@ -90,7 +107,10 @@ export class PrismaQuestionsRepository implements QuestionRepository {
         ),
         this.questionAttachmentRepository.deleteMany(
             question.attachments.getRemovedItems()
-        )
+        ),
+
+
+      this.cacheRepository.delete(`question:${data.slug}:details`)
     ])
 
 
