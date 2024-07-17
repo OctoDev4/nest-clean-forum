@@ -11,7 +11,7 @@ export class RedisCacheRepository implements CacheRepository{
   constructor(private redis: RedisService) {}
 
   async delete(key: string){
-    await this.redis.del()
+    await this.redis.del(key)
   }
 
   async get(key: string){
@@ -20,7 +20,7 @@ export class RedisCacheRepository implements CacheRepository{
 
   async set(key: string, value: string){
 
-    await  this.redis.set(key,value,'EX',60)
+    await  this.redis.set(key,value,'EX',60*15)
 
   }
   }
